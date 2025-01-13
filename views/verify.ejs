@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Account</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen px-4">
+    <div class="w-full max-w-sm p-6 bg-white shadow-lg rounded-lg">
+        <h2 class="text-2xl font-bold mb-6 text-center">Verify Your Account</h2>
+
+        <% if (message) { %>
+            <div id="message" 
+                 class="p-3 rounded-lg shadow-lg mb-4 
+                 <%= type === 'success' ? 'bg-green-500' : 'bg-red-500' %> 
+                 text-white transition-opacity duration-1000">
+                <p><%= message %></p>
+            </div>
+        <% } %>
+
+        <form action="/verify" method="POST" class="space-y-4">
+            <input type="hidden" name="email" value="<%= email %>">
+            <div>
+                <label for="verificationCode" class="block text-sm font-semibold">Verification Code</label>
+                <input 
+                    type="text" 
+                    name="verificationCode" 
+                    id="verificationCode" 
+                    class="w-full p-2 border border-gray-300 rounded-md"
+                    required>
+            </div>
+            <button 
+                type="submit" 
+                class="w-full bg-yellow-500 text-white py-2 rounded-md font-semibold hover:bg-yellow-600 transition">
+                Verify
+            </button>
+        </form>
+
+        <p class="mt-6 text-center text-sm">
+            Back to
+            <a href="/login" class="text-yellow-500 hover:underline">Login</a>
+        </p>
+    </div>
+</body>
+</html>

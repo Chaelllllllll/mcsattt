@@ -17,6 +17,7 @@
     "express-session": "^1.18.1",
     "fs": "^0.0.1-security",
     "html5-qrcode": "^2.3.8",
+    "nodemailer": "^6.9.16",
     "qrcode": "^1.5.4"
   }
 }

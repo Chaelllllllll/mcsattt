@@ -8,117 +8,51 @@
 <body class="bg-gray-100 min-h-screen flex flex-col">
     <!-- Header -->
     <header class="bg-blue-500 w-full text-white py-4 shadow-md">
-        <h1 class="text-2xl font-bold text-center">Dashboard</h1>
+        <h1 class="text-2xl font-bold text-center">Student Dashboard</h1>
     </header>
 
     <!-- Main Content -->
     <div class="container mx-auto mt-8 px-4 flex flex-wrap lg:flex-nowrap gap-6">
-        <!-- User Information Form -->
+        <!-- User Information Display -->
         <div class="bg-white shadow-md rounded-lg p-6 flex-1 w-full lg:w-1/2">
-            <h2 class="text-xl font-semibold mb-4">Update Your Information</h2>
-            <form action="/update" method="POST" class="space-y-4">
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                    <input
-                        type="text"
-                        name="name"
-                        id="name"
-                        value="<%= user.name %>"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-                <div>
-                    <label for="age" class="block text-sm font-medium text-gray-700">Age</label>
-                    <input
-                        type="number"
-                        name="age"
-                        id="age"
-                        value="<%= user.age %>"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-                <div>
-                    <label for="section" class="block text-sm font-medium text-gray-700">Section</label>
-                    <input
-                        type="text"
-                        name="section"
-                        id="section"
-                        value="<%= user.section %>"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-                <div>
-                    <label for="teachers" class="block text-sm font-medium text-gray-700">Teachers</label>
-                    <input
-                        type="text"
-                        name="teachers"
-                        id="teachers"
-                        value="<%= user.teachers %>"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-                <div>
-                    <label for="facebook" class="block text-sm font-medium text-gray-700">Facebook Link</label>
-                    <input
-                        type="url"
-                        name="facebook"
-                        id="facebook"
-                        value="<%= user.facebook %>"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-                <div>
-                    <label for="guardian_name" class="block text-sm font-medium text-gray-700">Guardian Name</label>
-                    <input
-                        type="text"
-                        name="guardian_name"
-                        id="guardian_name"
-                        value="<%= user.guardian_name %>"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-                <div>
-                    <label for="relationship" class="block text-sm font-medium text-gray-700">Relationship</label>
-                    <input
-                        type="text"
-                        name="relationship"
-                        id="relationship"
-                        value="<%= user.relationship %>"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-                <div>
-                    <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
-                    <input
-                        type="tel"
-                        name="phone"
-                        id="phone"
-                        value="<%= user.phone %>"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input
-                        type="email"
-                        name="email"
-                        id="email"
-                        value="<%= user.email %>"
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
+            <h2 class="text-xl font-semibold mb-4 text-center">Student Information</h2>
+            <ul class="space-y-2">
+                <li class="break-words"><strong>Name:</strong> <%= user.name || 'N/A' %></li>
+                <li class="break-words"><strong>Age:</strong> <%= user.age || 'N/A' %></li>
+                <li class="break-words"><strong>Section:</strong> <%= user.section || 'N/A' %></li>
+                <li class="break-words"><strong>Teachers:</strong> <%= user.teachers || 'N/A' %></li>
+                <li class="break-words">
+                    <strong>Facebook:</strong> 
+                    <a href="<%= user.facebook %>" class="text-blue-500 underline break-all">
+                        <%= user.facebook || 'N/A' %>
+                    </a>
+                </li>
+                <li class="break-words"><strong>Guardian Name:</strong> <%= user.guardian_name || 'N/A' %></li>
+                <li class="break-words"><strong>Relationship:</strong> <%= user.relationship || 'N/A' %></li>
+                <li class="break-words"><strong>Phone:</strong> <%= user.phone || 'N/A' %></li>
+                <li class="break-words"><strong>Email:</strong> <%= user.email || 'N/A' %></li>
+            </ul>
+            
+            <button
+                id="updateInfoButton"
+                class="w-full mt-4 bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+            >
+                Update Information
+            </button>
+            <!-- Logout Button -->
+            <form action="/logout" method="POST" class="mt-4">
                 <button
                     type="submit"
-                    class="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition"
+                    class="w-full bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition"
                 >
-                    Update Information
+                    Logout
                 </button>
             </form>
         </div>
 
         <!-- QR Code and Logout Button -->
         <div class="bg-white shadow-md rounded-lg p-6 flex-1 w-full lg:w-1/2 text-center">
-            <h2 class="text-xl font-semibold mb-4">Your QR Code</h2>
+            <h2 class="text-xl font-semibold mb-4">Attendance QR Code</h2>
             <% if (qrCode) { %>
                 <img src="<%= qrCode %>" alt="QR Code" class="mx-auto rounded-lg shadow-lg mb-4" />
                 <!-- Download QR Code Button -->
@@ -132,16 +66,158 @@
             <% } else { %>
                 <p class="text-gray-500 mb-4">QR Code not available</p>
             <% } %>
-            <!-- Logout Button -->
-            <form action="/logout" method="POST" class="mt-4">
-                <button
-                    type="submit"
-                    class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition"
-                >
-                    Logout
-                </button>
-            </form>
         </div>
     </div>
+
+    <!-- Modal for Update Information -->
+    <div
+        id="updateModal"
+        class="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center hidden"
+    >
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto p-6">
+            <h2 class="text-center text-xl font-semibold mb-4">Update Information</h2>
+            <form action="/update" method="POST" class="space-y-4">
+                <input type="hidden" name="id" value="<%= user.id %>" />
+            
+                <!-- Name -->
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                    <input
+                        type="text"
+                        name="name"
+                        id="name"
+                        value="<%= user.name || '' %>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+            
+                <!-- Age -->
+                <div>
+                    <label for="age" class="block text-sm font-medium text-gray-700">Age</label>
+                    <input
+                        type="number"
+                        name="age"
+                        id="age"
+                        value="<%= user.age || '' %>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+            
+                <!-- Section -->
+                <div>
+                    <label for="section" class="block text-sm font-medium text-gray-700">Section</label>
+                    <input
+                        type="text"
+                        name="section"
+                        id="section"
+                        value="<%= user.section || '' %>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+            
+                <!-- Teachers -->
+                <div>
+                    <label for="teachers" class="block text-sm font-medium text-gray-700">Teachers</label>
+                    <input
+                        type="text"
+                        name="teachers"
+                        id="teachers"
+                        value="<%= user.teachers || '' %>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+            
+                <!-- Facebook -->
+                <div>
+                    <label for="facebook" class="block text-sm font-medium text-gray-700">Facebook Link</label>
+                    <input
+                        type="url"
+                        name="facebook"
+                        id="facebook"
+                        value="<%= user.facebook || '' %>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+            
+                <!-- Guardian Name -->
+                <div>
+                    <label for="guardian_name" class="block text-sm font-medium text-gray-700">Guardian Name</label>
+                    <input
+                        type="text"
+                        name="guardian_name"
+                        id="guardian_name"
+                        value="<%= user.guardian_name || '' %>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+            
+                <!-- Relationship -->
+                <div>
+                    <label for="relationship" class="block text-sm font-medium text-gray-700">Relationship</label>
+                    <input
+                        type="text"
+                        name="relationship"
+                        id="relationship"
+                        value="<%= user.relationship || '' %>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+            
+                <!-- Phone -->
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                    <input
+                        type="tel"
+                        name="phone"
+                        id="phone"
+                        value="<%= user.phone || '' %>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+            
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input
+                        type="email"
+                        name="email"
+                        id="email"
+                        value="<%= user.email || '' %>"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+            
+                <!-- Submit Button -->
+                <button
+                    type="submit"
+                    class="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg hover:bg-blue-600 transition"
+                >
+                    Save Changes
+                </button>
+            </form>
+            
+            <button
+                id="closeModalButton"
+                class="mt-4 w-full bg-gray-500 text-white font-semibold py-2 rounded-lg hover:bg-gray-600 transition"
+            >
+                Cancel
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript for Modal -->
+    <script>
+        const updateModal = document.getElementById('updateModal');
+        const updateInfoButton = document.getElementById('updateInfoButton');
+        const closeModalButton = document.getElementById('closeModalButton');
+
+        updateInfoButton.addEventListener('click', () => {
+            updateModal.classList.remove('hidden');
+        });
+
+        closeModalButton.addEventListener('click', () => {
+            updateModal.classList.add('hidden');
+        });
+    </script>
 </body>
 </html>

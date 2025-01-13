@@ -5,6 +5,8 @@ const fs = require("fs");
 const session = require("express-session");
 const bcrypt = require("bcryptjs");
 
+const nodemailer = require("nodemailer"); // Add nodemailer
+
 const app = express();
 const PORT = 3000;
 
@@ -40,12 +42,30 @@ const generateUniqueId = () => {
   return Math.floor(1000000000 + Math.random() * 9000000000).toString();
 };
 
+const generateVerificationCode = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+// Nodemailer Transport
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // Use your email provider
+  auth: {
+    user: 'johnmichaelmanlangit.compprog@gmail.com', // Replace with your email
+    pass: 'bnkf ozef tjqv mfnn', // Replace with your email password
+  },
+  tls: {
+    rejectUnauthorized: false, // Allow self-signed certificates
+  },
+});
+
+
 // Routes
 
 // Register Page
 app.get("/", (req, res) => {
     const message = req.query.message || null;  // Ensure message is either from query or null
-    res.render("register", { message });  // Pass message to the view
+    const type = req.query.type || null;
+    res.render("register", { message, type});  // Pass message to the view
   });
 
 // Register user
@@ -57,50 +77,97 @@ app.post('/register', (req, res) => {
     const existingUser = users.find(u => u.email === email);
 
     if (existingUser) {
-        return res.redirect('/?message=Email already registered');
+        return res.redirect('/?message=Email already registered&type=error');
     }
 
     const userId = generateUniqueId();  // Correct function name here
     const hashedPassword = bcrypt.hashSync(password, 10);
-    
+    const verificationCode = generateVerificationCode();
+
     const newUser = {
         id: userId,
         name,
         email,
         password: hashedPassword,
-        classType
+        classType,
+        verified: false,
+        verificationCode,
     };
 
     // Save the new user to the JSON database
     users.push(newUser);
     writeData(USERS_FILE, users);
 
-    res.redirect('/login?message=Registration successful, please login');
+    // Send Verification Email
+  transporter.sendMail({
+    from: '"Muntinlupa Cosmopolitan School" <mcsatt@gmail.com>',
+    to: email,
+    subject: "Verify Your Account",
+    text: `Your verification code is: ${verificationCode}`,
+    html: `<p>Your verification code is: <strong>${verificationCode}</strong></p>`,
+  }, (err, info) => {
+    if (err) {
+      console.error("Error sending email:", err);
+      return res.redirect('/?message=Registration failed, please try again&type=error');
+    }
+    console.log("Email sent:", info.response);
+    res.redirect(`/verify?email=${encodeURIComponent(email)}`);
+  });
+});
+
+app.get("/verify", (req, res) => {
+  const { email } = req.query;
+  res.render("verify", { email, message: null, type: null });
+});
+
+app.post("/verify", (req, res) => {
+  const { email, verificationCode } = req.body;
+
+  const users = readData(USERS_FILE);
+  const user = users.find(u => u.email === email);
+
+  if (!user) {
+    return res.render("verify", { email, message: "Email not found.", type: "error" });
+  }
+
+  if (user.verificationCode === verificationCode) {
+    user.verified = true;
+    user.verificationCode = null; // Clear the verification code
+    writeData(USERS_FILE, users);
+    return res.redirect('/login?message=Verification successful, please login&type=success');
+  }
+
+  res.render("verify", { email, message: "Invalid verification code.", type: "error" });
 });
 
 // Login Page
 app.get('/login', (req, res) => {
     const message = req.query.message || null;
-    res.render('login', { message });
+    const type = req.query.type || null;
+    res.render('login', { message, type });
 });
 
 // Login user
 app.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    
-    const users = readData(USERS_FILE);  // Read user data from JSON
-    const user = users.find(u => u.email === email);  // Find user by email
+  const { email, password } = req.body;
+  
+  const users = readData(USERS_FILE); // Read user data from JSON
+  const user = users.find(u => u.email === email); // Find user by email
 
-    if (!user) {
-        return res.redirect('/login?message=Email not found');
-    }
+  if (!user) {
+      return res.redirect('/login?message=Email not found&type=error');
+  }
 
-    if (!bcrypt.compareSync(password, user.password)) {
-        return res.redirect('/login?message=Incorrect password');
-    }
+  if (!bcrypt.compareSync(password, user.password)) {
+      return res.redirect('/login?message=Incorrect password&type=error');
+  }
 
-    req.session.user = user;  // Save user to session
-    res.redirect('/dashboard');
+  if (!user.verified) {
+      return res.redirect('/login?message=Your email is not verified. Please verify your account to login.&type=error');
+  }
+
+  req.session.user = user; // Save user to session
+  res.redirect('/dashboard');
 });
 
 app.get("/dashboard", async (req, res) => {
@@ -131,8 +198,8 @@ app.post("/admin/login", (req, res) => {
   const { username, password } = req.body;
 
   // Admin credentials
-  const adminUsername = "admin";
-  const adminPassword = "password"; // In production, hash this password
+  const adminUsername = "mcsadmin";
+  const adminPassword = "mcsadmin2024"; // In production, hash this password
 
   if (username === adminUsername && password === adminPassword) {
     req.session.admin = true; // Set session
@@ -181,28 +248,28 @@ app.post("/admin/scan", (req, res) => {
 });
 
 app.post("/update", (req, res) => {
-    const { id, name, age, section, teachers, facebook, guardian_name, relationship, phone, email } = req.body;
+  const { id, name, age, section, teachers, facebook, guardian_name, relationship, phone, email } = req.body;
 
-    const users = readData(USERS_FILE);
-    const user = users.find((u) => u.id === id); // Find user by ID
+  const users = readData(USERS_FILE);
+  const user = users.find((u) => u.id === id); // Find user by ID
 
-    if (user) {
-        // Update user details
-        user.name = name;
-        user.age = age;
-        user.section = section;
-        user.teachers = teachers;
-        user.facebook = facebook;
-        user.guardian_name = guardian_name;
-        user.relationship = relationship;
-        user.phone = phone;
-        user.email = email;
+  if (user) {
+      // Update user details only if they exist in the request body
+      user.name = name || user.name;
+      user.age = age || user.age;
+      user.section = section || user.section;
+      user.teachers = teachers || user.teachers;
+      user.facebook = facebook || user.facebook;
+      user.guardian_name = guardian_name || user.guardian_name;
+      user.relationship = relationship || user.relationship;
+      user.phone = phone || user.phone;
+      user.email = email || user.email;
 
-        writeData(USERS_FILE, users); // Save updated data
-        res.redirect("/dashboard"); // Redirect to dashboard
-    } else {
-        res.status(404).send("User not found");
-    }
+      writeData(USERS_FILE, users); // Save updated data
+      res.redirect("/dashboard"); // Redirect to dashboard
+  } else {
+      res.status(404).send("User not found");
+  }
 });
 
 

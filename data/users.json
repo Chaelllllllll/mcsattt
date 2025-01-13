@@ -1,3 +1,19 @@
 [
-  
+  {
+    "id": "4740309955",
+    "name": "John Michael Manlangit",
+    "email": "johnmichaelmanlangit.compprog@gmail.com",
+    "password": "$2a$10$N6UYSoxEplqM/SxcQ2mcpe9PcP8t1SqsrNOqZKNxLDnHB8j.0GP4e",
+    "classType": "morning",
+    "verified": true,
+    "verificationCode": null,
+    "age": "19",
+    "section": "Grade 11 Scorpio",
+    "teachers": "Regina Villamor",
+    "facebook": "https://www.facebook.com/chammmybaby/",
+    "guardian_name": "Joel Baguio Manlangit",
+    "relationship": "Father",
+    "phone": "09279507571",
+    "attended": true
+  }
 ]
